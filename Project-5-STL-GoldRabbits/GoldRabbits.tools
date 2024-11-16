@@ -1,0 +1,73 @@
+/**
+ * @author Stellar Nguyen
+ * CECS 282-04
+ * Program 5 - Gold Rabbits
+ * 04/26/2022
+ *
+ * I certify that this program is my own original work. I did not copy any part of this program from
+ * any other source. I further certify that I typed each and every line of code in this program.
+ */
+
+#include <iostream>
+#include <string>
+#include "BigInt.h"
+#include <map>
+using namespace std;
+
+/**
+ * Find a number of pairs of rabbits after n month(s) 
+ * and detect overflow.
+ * 
+ * @param n n month(s).
+ * 
+ * @return a number of pairs of rabbits after n month(s).
+ */
+int goldRabbits(int n){
+	static map<int, int> rabbit;
+	if (n == 0 || n == 1) {
+		return 1;
+	}
+	
+	map<int, int> ::iterator it = rabbit.find(n);
+	if (it == rabbit.end()) {
+		rabbit[n] = goldRabbits(n - 2) + goldRabbits(n - 1);
+		
+		if (rabbit[n] < 0){
+			string error = "Overflow Error - goldRabbits overflowed using " + to_string(n);
+			throw error;
+		}
+		return rabbit[n];
+	}
+	else {
+		return rabbit[n];
+	}
+	
+}
+
+/**
+ * Find a number of pairs of rabbits after n month(s)
+ * using BigInt instead of Int.
+ * 
+ * @param n n month(s).
+ * 
+ * @return a number of pairs of rabbits after n month(s).
+ */
+BigInt goldRabbits(BigInt n) {
+	static map<BigInt, BigInt> store;
+	if (n == 0 || n == 1) {
+		store[n] = 1;
+		return 1;
+	}
+	else {
+		map<BigInt, BigInt>::iterator it = store.find(n);
+		map<BigInt, BigInt>::const_iterator end = store.end();
+		if (it != end){
+			return store[n];
+		}else{
+			store[n] = goldRabbits(n-1) + goldRabbits(n-2);
+			return store[n];
+
+		}
+	}
+
+}
